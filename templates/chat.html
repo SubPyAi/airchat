@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>AirChat</title>
+	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.3/socket.io.min.js" integrity="sha512-GtM/5c/Ie0lStj6QwEG0HkpMQuGr9vrOAgFD4nNmImviyZvsJxN7TYU7b+R7Kthob0zFBUpuxfl3R3Mn1qekTw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<style type="text/css">
+		@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+		*
+		{
+		  margin: 0;
+		  padding: 0;
+		  box-sizing: border-box;
+		  font-family: 'Poppins', sans-serif;
+		}
+		body
+		{
+		  min-height: 100vh;
+		}
+		.inputBox1
+		{
+		  position: fixed;
+		  min-width: 80%;
+		}
+		.inputBox1 input
+		{
+		  width: 100%;
+		  padding: 10px;
+		  border: 1px solid rgba(255, 255, 255, 0.2);
+		  background: #1d2b3a;
+		  border-radius: 5px;
+		  outline: none;
+		  color: #fff;
+		  font-size: 1em;
+		  transition: 0.5s;
+		}
+		.inputBox1 span
+		{
+		  position: absolute;
+		  left: 0;
+		  padding: 10px;
+		  pointer-events: none;
+		  font-size: 1em;
+		  color: rgba(255, 255, 255, 0.2);
+		  text-transform: uppercase;
+		  transition: 0.5s;
+		}
+		.inputBox1 input:valid ~ span,
+		.inputBox1 input:focus ~ span
+		{
+		  color: #00dfc4;
+		  transform: translateX(10px) translateY(-7px);
+		  font-size: 0.65em;
+		  padding: 0 10px;
+		  background: #00dcf4;
+		  color: #1d2b3a;
+		  border-radius: 2px;
+		  letter-spacing: 0.2em;
+		}
+		.inputBox1 input:valid,
+		.inputBox1 input:focus
+		{
+		  border-color: #00dfc4;
+		}
+		.message-div {
+			height:  400px;
+			width:  200px;
+			overflow: auto;
+		}
+		.btn
+		{
+			background-color: #45f3ff;
+			color: #0852f4;
+			min-height: 30px;
+			min-width: 50px;
+			font-size: 15px;
+			border: 1px solid #00dcf4;
+			border-radius: 10px;
+		}
+		
+		.splash{
+		  position: fixed;
+		  top: 0;
+		  left: 0;
+		  width: 100%;
+		  height: 100vh;
+		  background: #1d2b3a;
+		  z-index: 200;
+		  color: white;
+		  text-align: center;
+		  line-height: 90vh;
+		  font-family: 'Poppins', sans-serif;
+		}
+		
+		.splash.display-none{
+		  position: fixed;
+		  opacity: 0;
+		  top: 0;
+		  left: 0;
+		  width: 100%;
+		  height: 100vh;
+		  background: black;
+		  z-index: -10;
+		  color: white;
+		  text-align: center;
+		  line-height: 90vh;
+		  font-family: 'Poppins', sans-serif;
+		  transition: all 0.5s;
+		}
+		
+		@keyframes fadeIn{
+		  to{
+		    opacity: 1;
+		  }
+		}
+		
+		.fade-in{
+		  opacity: 0;
+		  animation: fadeIn 1s ease-in forwards;
+		}
+		
+		.btn{
+		  transition: 0.5s;
+		  min-height: 45px;
+		  border-radius: 35px;
+		  background: #00dcf4;
+		}
+		.btn:hover{
+		  background-color: #00dfc4;
+		}
+		
+		.message-div{
+  		transition: 0.5s;
+		}
+		.mainDiv{
+			display: flex;
+			justify-content: center;
+		}
+	</style>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body style="text-align:center; font-family: Arial, serif; font-size: 14pt; background-color: #1d2b3a;">
+	<div id="splash" class="splash">
+		<img class="fade-in" src="{{ url_for('static', filename='icon_air.png') }}" alt="AirChat">
+	</div>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			window.onbeforeunload = function() {
+				socket.emit('client_disconnect', uname + ":" + uid);
+				socket.send(uname + ' left the room');
+			};
+			if (document.referrer == '') {
+				window.location.href = '/'
+			 };
+			const queryString = window.location.search;
+			const urlParams = new URLSearchParams(queryString);
+			const uname = urlParams.get('u');
+			const idver = urlParams.get('vr');
+			const uid = urlParams.get('ud');
+			if (idver != 'true') {
+				window.location.href = "/";
+			}
+			var socket = io.connect("http://localhost:5000")
+
+			socket.on('connect', function() {
+				socket.send('usrconnected@nxgenServers?' + uname + "?" + uid);
+			});
+
+			socket.on('message', function(data) {
+				if(data.includes('omghadfjkhyabweuirtagjdskgfbdsilagfbewayrnxaklsdjgf') != true){
+					misc = data.split(':');
+					if(misc[0] == uname){
+						$('#messages').append($('<div style="background-color: #36506c; float: left; width: fit-content; margin-left: auto; margin-right: auto; max-width: 80%; border-radius: 5px; border-bottom-left-radius: 0px; padding: 4px;"><p style="color: rgba(255, 255, 255, 0.7);"></div><br>').text("  " + data + ""));
+						$('#messages').append($('<div style="height: 5px;"></div><br>'));
+						var div = $('#messages');
+						div.animate({
+							scrollTop: div[0].scrollHeight
+						}, 700);
+					}
+					else{
+						$('#messages').append($('<div style="background-color: #3c4479; float: right; width: fit-content; margin-left: auto; margin-right: auto; max-width: 80%; border-radius: 5px; border-bottom-right-radius: 0px; padding: 4px;"><p style="color: rgba(255, 255, 255, 0.7);"></div><br>').text("  " + data + ""));
+						$('#messages').append($('<div style="height: 5px;"></div><br>'));
+						var div = $('#messages');
+						div.animate({
+							scrollTop: div[0].scrollHeight
+						}, 700);
+					}
+				}
+				else{
+					msg = data.split(":");
+					in2 = msg[1].split(",");
+					if (in2[1] != 'online') {
+						setTimeout(() => {
+							$('#messages').append($('<div style="background-color: #36506c; width: fit-content; margin-left: auto; margin-right: auto; max-width: 80%; border-radius: 5px; padding: 4px;"><p style="color: rgba(255, 255, 255, 0.7);"></div>').text("  " + msg[0] + ' joined the room' + "  "));
+							$('#messages').append($('<div style="height: 5px;"></div>'));
+						}, 3000);
+					}
+				}
+			});
+
+			var inputFeild = document.getElementById("message");
+			inputFeild.addEventListener("keypress", function(event) {
+				if (event.key === "Enter") {
+					event.preventDefault();
+					$('#sendBtn').click();
+				};
+			});
+
+			$('#sendBtn').on('click', function () {
+				if($('#message').val()!=""){
+				socket.send(uname + ": " + $('#message').val());
+				$('#message').val('');
+				var div = $('#messages');
+				div.animate({
+					scrollTop: div[0].scrollHeight
+				}, 1000);
+				}
+				$('#message').focus();
+			})
+		})
+		const splash = document.querySelector('.splash');
+			document.addEventListener('DOMContentLoaded', (e)=>{
+				setTimeout(()=>{
+					splash.classList.add('display-none');
+				}, 2000);
+			})
+	</script>
+	<div style="min-height: 10px;"></div>
+	<div style="border-radius: 20px; background: #151f2a; width: 100%; height: 50px; align-items: center; align-content: center; text-align: center; padding-top: 5px;" align="centre">
+	<h1 align="left" style="color: #8f8d8d; text-align: center;">AirChat 0.1</h1>
+	</div>
+	<br>
+	<div class='message-div' id='messages' style="text-align: center; margin: 0 auto; width: 70%; min-height: 60%;">
+		<div style="min-height:3%;"></div>
+	</div>
+	<div style="min-height:10px;"></div>
+	<div style="min-height: 10px;"></div>
+	<div class="mainDiv">
+	<div class="inputBox1">
+	<input type="text" id="message" required='required'>
+	<span>Message</span>
+	</div>
+	</div>
+	<span>
+	<div style="min-height: 50px;"></div>
+	<button id='sendBtn' class="btn"><img style="padding-left: 7px; padding-top: 2px;" src="../static/icon-send.png"></button>
+	</span>
+</body>
+</html>
