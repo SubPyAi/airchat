@@ -119,7 +119,6 @@ def provide_id(data):
 	else:
 		pass
 
-print("This app is being served on localhost:5000")
 
 if __name__ == "__main__":
-	socketio.run(app, host="localhost")
+	socketio.run(app, debug=False, host='0.0.0.0')
