@@ -5,6 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>AirChat</title>
 	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.3/socket.io.min.js" integrity="sha512-GtM/5c/Ie0lStj6QwEG0HkpMQuGr9vrOAgFD4nNmImviyZvsJxN7TYU7b+R7Kthob0zFBUpuxfl3R3Mn1qekTw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
@@ -187,13 +188,37 @@
 			var socket = io.connect("http://localhost:5000")
 			socket.on('message', function(data) {
 				if(data=='notValid'){
-					window.alert('The username and/or ID is already taken! \n Please try again');
+					swal({
+						title: "Error!",
+						text: "These credentials have already been taken!",
+						icon: "error",
+						button: "OK",
+					});
 					$('#id').val() = '';
 					$('#uname').val() = '';
 				}
+				if(data=="hmm"){
+					swal({
+						title: "INFO",
+						text: "You can't have a username with the word 'owner' in it",
+						icon: "info",
+						button: 'OK',
+					});
+					$('#id').val() = '';
+					$('#uname').val() = '';	
+				}
 				else {
-					window.alert('Your ID has succesfully been created!');
-					window.location.href = "/";
+					swal({
+						title: "Successful!",
+						text: "Your ID has been created!",
+						icon: "success",
+						background: "red",
+						button: "OK",
+					}).then((value) => {
+						if(value){
+							setTimeout(() => {window.location.href = "/";}, 700)
+						}
+					});
 				}
 			});
 			var inputFeild = document.getElementById("id");

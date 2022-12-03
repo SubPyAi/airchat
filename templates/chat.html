@@ -5,6 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>AirChat</title>
 	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.3/socket.io.min.js" integrity="sha512-GtM/5c/Ie0lStj6QwEG0HkpMQuGr9vrOAgFD4nNmImviyZvsJxN7TYU7b+R7Kthob0zFBUpuxfl3R3Mn1qekTw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<style type="text/css">
@@ -229,7 +230,7 @@
 			})
 	</script>
 	<div style="min-height: 10px;"></div>
-	<div style="border-radius: 20px; background: #151f2a; width: 100%; height: 50px; align-items: center; align-content: center; text-align: center; padding-top: 5px;" align="centre">
+	<div style="border-radius: 20px; background: #151f2a; width: 100%; height: 50px; align-items: center; align-content: center; text-align: center; padding-top: 3px;" align="centre">
 	<h1 align="left" style="color: #8f8d8d; text-align: center;">AirChat 0.1</h1>
 	</div>
 	<br>
@@ -245,8 +246,8 @@
 	</div>
 	</div>
 	<span>
-	<div style="min-height: 50px;"></div>
-	<button id='sendBtn' class="btn"><img style="padding-left: 7px; padding-top: 2px;" src="../static/icon-send.png"></button>
+	<div style="min-height: 60px;"></div>
+	<button id='sendBtn' class="btn"><img style="padding-left: 7px; padding-top: 2px;" src="{{ url_for('static', filename='icon-send.png') }}"></button>
 	</span>
 </body>
 </html>

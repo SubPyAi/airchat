@@ -1,3 +1,4 @@
+import os
 import flask
 import flask_socketio
 from flask import Flask, render_template, redirect
@@ -73,7 +74,7 @@ def register():
 def disconnect_user(data):
 	uname, uid = data.split(':')
 	print(f"{uname} disconnected")
-	socketio.send(f"{uname} left the room", broadcast=True)
+	#socketio.send(f"{uname} left the room", broadcast=True)
 	with open('user.cfg', 'r') as f:
 		usrdata = f.readlines()
 		f.close()
@@ -102,15 +103,18 @@ def provide_id(data):
 			send('notValid')
 			fnd = True
 			break
+		elif "Owner" in nuname or "owner" in nuname:
+			send("hmm")
+			fnd = True
+			break
 		elif nuname == b:
 			send('notValid')
 			fnd = True
 			break
 		else:
 			fnd = False
-			break
 	if fnd == False:
-		usrdata.append(f'{nuid}:{nuname}:offline')
+		usrdata.append(f'{nuid}:{nuname}:offline\n')
 		with open('user.cfg', 'w') as f:
 			f.write('')
 			f.writelines(usrdata)
@@ -121,4 +125,4 @@ def provide_id(data):
 
 
 if __name__ == "__main__":
-	socketio.run(app, debug=False, host='0.0.0.0')
+	socketio.run(app, debug=False, host='localhost', port=5000)
