@@ -20,10 +20,11 @@ def handle_message(message):
 				usrdata = f.readlines()
 				f.close()
 			for i in range(0, len(usrdata)):
-				if uid in usrdata[i]:
-					a, b, c = usrdata[i].split(":")
+				a, b, c, d = usrdata[i].split(":")
+				d = d.replace("\n", '')
+				if uid == a:
 					c = "online"
-					newData = a + ":" + b + ":" + c + "\n"
+					newData = a + ":" + b + ":" + c + ":" + d + "\n"
 					usrdata[i] = newData
 					with open('user.cfg', 'w') as f:
 						f.write("")
@@ -39,14 +40,19 @@ def handle_message(message):
 			usrdata = f.readlines()
 			f.close()
 		for i in usrdata:
-			uid0, uname, status = i.split(':')
+			data = []
+			data = i.split(':')
+			uid0 = data[0]
+			uname = data[1]
+			status = data[2]
+			col = data[3]
 			if uid == uid0:
 				status = status.replace('\n', '')
 				if status=='online':
 					send(uname + ':omghadfjkhyabweuirtagjdskgfbdsilagfbewayrnxaklsdjgf' + uid + ",online", broadcast=True)
 					break
 				else:
-					send(uname + ':omghadfjkhyabweuirtagjdskgfbdsilagfbewayrnxaklsdjgf' + uid + ",found", broadcast=True)
+					send(uname + ':omghadfjkhyabweuirtagjdskgfbdsilagfbewayrnxaklsdjgf' + uid + "]" + col + ",found", broadcast=True)
 					break
 			else:
 				uname = ''
@@ -80,9 +86,9 @@ def disconnect_user(data):
 		f.close()
 	for i in range(0, len(usrdata)):
 		if uid in usrdata[i]:
-			a, b, c = usrdata[i].split(":")
+			a, b, c, d = usrdata[i].split(":")
 			c = "offline"
-			newData = a + ":" + b + ":" + c + "\n"
+			newData = a + ":" + b + ":" + c + ":" + d
 			usrdata[i] = newData
 			with open('user.cfg', 'w') as f:
 				f.write("")
@@ -91,6 +97,34 @@ def disconnect_user(data):
 		else:
 			pass
 
+@socketio.on('reqcol')
+def getcol(data):
+	with open('user.cfg', 'r') as f:
+		usrdata = f.readlines()
+		f.close()
+	for i in range(0, len(usrdata)):
+		a, b, c, d = usrdata[i].split(":")
+		if data == a:
+			send('auifyhbvnawhgeicfgvnweayi4grxbdwilreygnvcewrhjgdfgeashgta:'+d)
+			break
+
+@socketio.on('changecol')
+def changecolor(data):
+	uid, col = data.split(":")
+	with open('user.cfg', 'r') as f:
+		usrdata = f.readlines()
+		f.close()
+	for i in range(0, len(usrdata)):
+		a, b, c, d = usrdata[i].split(":")
+		if uid == a:
+			d = col
+			usrdata[i] = a + ":" + b + ":" + c + ":" + d + "\n"
+			with open('user.cfg', 'w') as f:
+				f.write("")
+				f.writelines(usrdata)
+				f.close()
+			break
+
 @socketio.on('request_new_id')
 def provide_id(data):
 	nuid, nuname = data.split(':')
@@ -98,7 +132,7 @@ def provide_id(data):
 		usrdata = f.readlines()
 		f.close()
 	for i in range(0, len(usrdata)):
-		a, b, c = usrdata[i].split(":")
+		a, b, c, d = usrdata[i].split(":")
 		if nuid == a:
 			send('notValid')
 			fnd = True
@@ -114,7 +148,7 @@ def provide_id(data):
 		else:
 			fnd = False
 	if fnd == False:
-		usrdata.append(f'{nuid}:{nuname}:offline\n')
+		usrdata.append(f'{nuid}:{nuname}:offline:#36506c\n')
 		with open('user.cfg', 'w') as f:
 			f.write('')
 			f.writelines(usrdata)

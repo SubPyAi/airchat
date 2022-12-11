@@ -190,12 +190,20 @@
 								text: "This ID is already logged in!\ncontact the owner at advikdhangarreal@gmail.com if this is a mistake.",
 								icon: "info",
 								button: "OK",
-							});
+							}).then((val)=>{
+								if(val){
+									setTimeout($('#id').focus(), 200)
+								}
+							})
 							$('#id').val('');
 						}
 						if (data.includes('found', -8) == true){
 							var user = data.split(":");
-							redirectToChat(user, $('#id').val());
+							console.log(user);
+							var col = user[1].split("]")
+							var fcol = col[1].split(",")
+							var fccol = fcol[0].split("#");
+							redirectToChat(user, $('#id').val(), fccol[1]);
 						}
 						if (data.includes('found', -8) == false && data.includes('online', -8) != true){
 							$('#id').val('');
@@ -230,7 +238,7 @@
 			});
 		})
 
-		function redirectToChat(uname, uid){
+		function redirectToChat(uname, uid, col){
 			window.location.href='chat?u=' + uname[0].toString() + '&vr=true&ud=' + uid;
 		}
 

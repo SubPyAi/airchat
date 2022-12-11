@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>AirChat</title>
 	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.3/socket.io.min.js" integrity="sha512-GtM/5c/Ie0lStj6QwEG0HkpMQuGr9vrOAgFD4nNmImviyZvsJxN7TYU7b+R7Kthob0zFBUpuxfl3R3Mn1qekTw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 	<style type="text/css">
@@ -140,8 +140,60 @@
 			display: flex;
 			justify-content: center;
 		}
+		.container {
+			float: left;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			gap: 30px;
+		}
+		#style1 {
+  			float: left;
+  			-webkit-appearance: none;
+  			-moz-appearance: none;
+  			appearance: none;
+  			width: 60px;
+  			height: 60px;
+  			background-color: #000000;
+	  		border: none;
+  			cursor: pointer;
+		}
+
+		.color-picker {
+			position: relative;
+		}
+		.color-indicator {
+			display: inline-block;
+			width: 70px;
+			height: 70px;
+			background-color: #fff;
+			border-radius: 20px;
+			float: left;
+		}
+		.color-indicator-active ~ #color-picker {
+			opacity: 1;
+		}
+		.color-indicator-active ~ .btnOK {
+			opacity: 1;
+		}
+		#color-picker {
+			display: inline-block;
+			margin-left: 20px;
+			float: left;
+			transition: opacity 0.3s ease-out;
+			opacity: 0;
+		}
+		.btnOK {
+			float: left;
+			border-radius: 30px;
+			background: #76f544;
+			min-width: 70px;
+			min-height: 40px;
+			transform: translate(-160px, 75px);
+			transition: opacity 0.3s ease-out;
+			opacity: 0;
+		}
 	</style>
-	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body style="text-align:center; font-family: Arial, serif; font-size: 14pt; background-color: #1d2b3a;">
 	<div id="splash" class="splash">
@@ -168,13 +220,37 @@
 
 			socket.on('connect', function() {
 				socket.send('usrconnected@nxgenServers?' + uname + "?" + uid);
+				socket.emit('reqcol', uid)
 			});
 
 			socket.on('message', function(data) {
+				if(data.includes('auifyhbvnawhgeicfgvnweayi4grxbdwilreygnvcewrhjgdfgeashgta') == true) {
+					listcol = data.split(':');
+					var selfcolo = listcol[1].replace("\n", "");
+					var newColo = selfcolo;
+					helob(selfcolo, newColo, socket);
+				}
+			});
+		})
+		function helob(selfcol, newCol, socketa){
+			const queryString = window.location.search;
+			const urlParams = new URLSearchParams(queryString);
+			const uname = urlParams.get('u');
+			const uid = urlParams.get('ud');
+			var inputFeild = document.getElementById("message");
+			inputFeild.addEventListener("keypress", function(event) {
+				if (event.key === "Enter") {
+					event.preventDefault();
+					$('#sendBtn').click();
+				};
+			});
+
+			socketa.on('message', function(data) {
 				if(data.includes('omghadfjkhyabweuirtagjdskgfbdsilagfbewayrnxaklsdjgf') != true){
 					misc = data.split(':');
+					ord = data.split("]");
 					if(misc[0] == uname){
-						$('#messages').append($('<div style="background-color: #36506c; float: left; width: fit-content; margin-left: auto; margin-right: auto; max-width: 80%; border-radius: 5px; border-bottom-left-radius: 0px; padding: 4px;"><p style="color: rgba(255, 255, 255, 0.7);"></div><br>').text("  " + data + ""));
+						$('#messages').append($('<div class="msgbox" style="background-color: ' + selfcol + '; float: left; width: fit-content; margin-left: auto; margin-right: auto; max-width: 80%; border-radius: 5px; border-bottom-left-radius: 0px; padding: 4px;"><p style="color: rgba(255, 255, 255, 0.7);"></div><br>').text(ord[0]));
 						$('#messages').append($('<div style="height: 5px;"></div><br>'));
 						var div = $('#messages');
 						div.animate({
@@ -182,7 +258,7 @@
 						}, 700);
 					}
 					else{
-						$('#messages').append($('<div style="background-color: #3c4479; float: right; width: fit-content; margin-left: auto; margin-right: auto; max-width: 80%; border-radius: 5px; border-bottom-right-radius: 0px; padding: 4px;"><p style="color: rgba(255, 255, 255, 0.7);"></div><br>').text("  " + data + ""));
+						$('#messages').append($('<div style="background: ' + ord[1] + '; float: right; width: fit-content; margin-left: auto; margin-right: auto; max-width: 80%; border-radius: 5px; border-bottom-right-radius: 0px; padding: 4px;"><p style="color: rgba(255, 255, 255, 0.7);"></div><br>').text("  " + ord[0] + ""));
 						$('#messages').append($('<div style="height: 5px;"></div><br>'));
 						var div = $('#messages');
 						div.animate({
@@ -195,24 +271,33 @@
 					in2 = msg[1].split(",");
 					if (in2[1] != 'online') {
 						setTimeout(() => {
-							$('#messages').append($('<div style="background-color: #36506c; width: fit-content; margin-left: auto; margin-right: auto; max-width: 80%; border-radius: 5px; padding: 4px;"><p style="color: rgba(255, 255, 255, 0.7);"></div>').text("  " + msg[0] + ' joined the room' + "  "));
+							$('#messages').append($('<div style="width: fit-content; margin-left: auto; margin-right: auto; max-width: 80%; border-radius: 5px; padding: 4px;"><p style="color: rgba(255, 255, 255, 0.7);"></div>').text("  " + msg[0] + ' joined the room' + "  "));
 							$('#messages').append($('<div style="height: 5px;"></div>'));
 						}, 3000);
 					}
 				}
 			});
 
-			var inputFeild = document.getElementById("message");
-			inputFeild.addEventListener("keypress", function(event) {
-				if (event.key === "Enter") {
-					event.preventDefault();
-					$('#sendBtn').click();
-				};
+			var btnOk = document.getElementById("btnOK");
+
+			let colorIndicator = document.getElementById('color-indicator');
+			const colorPicker = new iro.ColorPicker("#color-picker", {width:70, color:newCol.toString()});
+			colorIndicator.style.backgroundColor = newCol.toString();
+			btnOk.style.backgroundColor = newCol.toString();
+			colorPicker.on('color:change', function(color) {
+				colorIndicator.style.backgroundColor = color.hexString;
+				btnOk.style.backgroundColor = color.hexString;
+			});
+
+			$('#btnOK').on('click', function() {
+				selfcol = colorPicker.color.hexString;
+				document.getElementById("color-indicator").classList.remove("color-indicator-active");
+				socketa.emit('changecol', uid + ":" + selfcol);
 			});
 
 			$('#sendBtn').on('click', function () {
 				if($('#message').val()!=""){
-				socket.send(uname + ": " + $('#message').val());
+				socketa.send(uname + ": " + $('#message').val() + "]" + selfcol.toString());
 				$('#message').val('');
 				var div = $('#messages');
 				div.animate({
@@ -221,20 +306,29 @@
 				}
 				$('#message').focus();
 			})
-		})
+		}
 		const splash = document.querySelector('.splash');
-			document.addEventListener('DOMContentLoaded', (e)=>{
-				setTimeout(()=>{
-					splash.classList.add('display-none');
-				}, 2000);
-			})
+			setTimeout(()=>{
+				splash.classList.add('display-none');
+			}, 2000);
 	</script>
 	<div style="min-height: 10px;"></div>
 	<div style="border-radius: 20px; background: #151f2a; width: 100%; height: 50px; align-items: center; align-content: center; text-align: center; padding-top: 3px;" align="centre">
 	<h1 align="left" style="color: #8f8d8d; text-align: center;">AirChat 0.1</h1>
 	</div>
 	<br>
-	<div class='message-div' id='messages' style="text-align: center; margin: 0 auto; width: 70%; min-height: 60%;">
+	<div class="color-picker"></div>
+	<button id="color-indicator" class="color-indicator" onclick="toggleit()"></button>
+	<script type="text/javascript">
+		function toggleit () {
+			document.getElementById("color-indicator").classList.add("color-indicator-active");
+		}
+	</script>
+	<div id="color-picker"></div>
+	<button class="btnOK" id="btnOK">
+		OK
+	</button>
+	<div class='message-div' id='messages' style="text-align: center; margin: 0 auto; width: 70%; min-height: 60%; transform: translateX(-100px);">
 		<div style="min-height:3%;"></div>
 	</div>
 	<div style="min-height:10px;"></div>
@@ -249,5 +343,6 @@
 	<div style="min-height: 60px;"></div>
 	<button id='sendBtn' class="btn"><img style="padding-left: 7px; padding-top: 2px;" src="{{ url_for('static', filename='icon-send.png') }}"></button>
 	</span>
+	<div style="max-height: 0px; max-width: 0px;" class="msgbox"></div>
 </body>
 </html>

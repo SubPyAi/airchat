@@ -193,7 +193,11 @@
 						text: "These credentials have already been taken!",
 						icon: "error",
 						button: "OK",
-					});
+					}).then((val) => {
+						if(val){
+							setTimeout(()=>{$('#id').focus()}, 200)
+						}
+					})
 					$('#id').val() = '';
 					$('#uname').val() = '';
 				}
