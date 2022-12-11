@@ -5,7 +5,7 @@ apiai==1.2.3
 appdirs==1.4.4
 async-generator==1.10
 attrs==21.2.0
-auto-py-to-exe @ file:///C:/Users/dhangar/downloads/auto_py_to_exe-2.13.0-py2.py3-none-any.whl
+auto-py-to-exe
 bandwidth-sdk==11.0.0
 beautifulsoup4==4.10.0
 bidict==0.22.0
@@ -89,18 +89,18 @@ pexpect==4.8.0
 Pillow==8.4.0
 pipwin==0.5.1
 plivo==4.18.1
-pocketsphinx @ file:///C:/Users/dhangar/Downloads/pocketsphinx-0.1.15-cp310-cp310-win_amd64.whl
+pocketsphinx
 psutil==5.9.0
 ptyprocess==0.7.0
 pure-python-adb==0.3.0.dev0
 py2exe==0.10.4.0
-PyAudio @ file:///C:/Users/dhangar/pipwin/PyAudio-0.2.11-cp310-cp310-win_amd64.whl
+PyAudio
 PyAutoGUI==0.9.52
 pybase64==1.2.0
 pycparser==2.20
 PyGetWindow==0.0.9
 Pygments==2.8.1
-pyinstaller @ https://github.com/pyinstaller/pyinstaller/tarball/develop
+pyinstaller
 pyinstaller-hooks-contrib==2021.1
 pyjsparser==2.7.1
 PyJWT==1.7.1
@@ -141,7 +141,7 @@ QT-PyQt-PySide-Custom-Widgets==0.2.6
 QtPy==2.0.1
 requests==2.25.1
 ruamel.std.zipfile==0.1.0
-scikit-image @ file:///C:/Users/dhangar/Downloads/scikit_image-0.19.0-cp310-cp310-win_amd64.whl
+scikit-image
 scipy==1.7.3
 selenium==4.1.0
 sh==1.14.1
