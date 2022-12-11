@@ -60,13 +60,6 @@ Jinja2==3.0.1
 Js2Py==0.71
 jsonpickle==0.9.6
 keyboard==0.13.5
-Kivy==2.1.0
-kivy-deps.angle==0.3.2
-kivy-deps.glew==0.3.1
-kivy-deps.gstreamer==0.3.3
-kivy-deps.sdl2==0.4.5
-Kivy-Garden==0.1.4
-kivymd==0.104.2
 kiwisolver==1.4.2
 lxml==4.6.3
 macholib==1.15.2
