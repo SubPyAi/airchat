@@ -83,10 +83,6 @@ pocketsphinx
 psutil==5.9.0
 ptyprocess==0.7.0
 pure-python-adb==0.3.0.dev0
-py2exe==0.10.4.0
-PyAudio
-PyAutoGUI==0.9.52
-pybase64==1.2.0
 pycparser==2.20
 PyGetWindow==0.0.9
 Pygments==2.8.1
