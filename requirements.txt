@@ -109,10 +109,7 @@ python-engineio==4.3.4
 python-for-android==2020.6.2
 python-socketio==5.7.1
 pytoml==0.1.21
-pyttsx3==2.71
 PyTweening==1.0.3
-pytz==2021.1
-pytz-deprecation-shim==0.1.0.post0
 pywin32==302
 pywin32-ctypes==0.2.0
 PyYAML==6.0
