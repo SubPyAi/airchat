@@ -119,14 +119,11 @@ scikit-image
 scipy==1.7.3
 selenium==4.1.0
 sh==1.14.1
-shiboken2==5.15.2
-shiboken6==6.2.3
 six==1.15.0
 sniffio==1.2.0
 sortedcontainers==2.4.0
 soupsieve==2.3.1
 speak==0.1
-SpeechRecognition==3.8.1
 tifffile==2021.11.2
 tinycss2==1.1.1
 toml==0.10.2
