@@ -113,7 +113,6 @@ pyttsx3==2.71
 PyTweening==1.0.3
 pytz==2021.1
 pytz-deprecation-shim==0.1.0.post0
-PyWavelets==1.2.0
 pywin32==302
 pywin32-ctypes==0.2.0
 PyYAML==6.0
@@ -136,10 +135,8 @@ SpeechRecognition==3.8.1
 tifffile==2021.11.2
 tinycss2==1.1.1
 toml==0.10.2
-tqdm==4.64.0
 trio==0.19.0
 trio-websocket==0.9.2
-twilio==6.62.1
 tzdata==2021.5
 tzlocal==4.1
 urllib3==1.26.4
