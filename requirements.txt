@@ -110,8 +110,6 @@ python-for-android==2020.6.2
 python-socketio==5.7.1
 pytoml==0.1.21
 PyTweening==1.0.3
-pywin32==302
-pywin32-ctypes==0.2.0
 PyYAML==6.0
 QT-PyQt-PySide-Custom-Widgets==0.2.6
 QtPy==2.0.1
