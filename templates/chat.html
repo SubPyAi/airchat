@@ -5,9 +5,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>AirChat</title>
 	<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-	<script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js" integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.3/socket.io.min.js" integrity="sha512-GtM/5c/Ie0lStj6QwEG0HkpMQuGr9vrOAgFD4nNmImviyZvsJxN7TYU7b+R7Kthob0zFBUpuxfl3R3Mn1qekTw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="{{ url_for('static', filename='iro.js') }}"></script>
+	<script src="{{ url_for('static', filename='jquery.js') }}"></script>
+	<script src="{{ url_for('static', filename='socket.io.min.js') }}"></script>
 	<style type="text/css">
 		@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 		*
@@ -161,6 +161,7 @@
 
 		.color-picker {
 			position: relative;
+			border: none;
 		}
 		.color-indicator {
 			display: inline-block;
@@ -169,6 +170,9 @@
 			background-color: #fff;
 			border-radius: 20px;
 			float: left;
+			border: none;
+			margin-left: 20px;
+			margin-top: 20px;
 		}
 		.color-indicator-active ~ #color-picker {
 			opacity: 1;
@@ -178,20 +182,68 @@
 		}
 		#color-picker {
 			display: inline-block;
-			margin-left: 20px;
+			margin-left: 10px;
+			margin-top: 20px;
 			float: left;
 			transition: opacity 0.3s ease-out;
 			opacity: 0;
+			border: none;
 		}
 		.btnOK {
 			float: left;
 			border-radius: 30px;
 			background: #76f544;
+			margin-top: 20px;
+			margin-left: 10px;
 			min-width: 70px;
 			min-height: 40px;
 			transform: translate(-160px, 75px);
 			transition: opacity 0.3s ease-out;
 			opacity: 0;
+			border: none;
+		}
+
+		.headerActiveMsgExpand {
+			box-shadow: 5px 5px 5px cyan, 5px 5px 10px cyan, 5px 5px 15px cyan, 5px 5px 20px cyan, 5px 5px 25px cyan, 5px 5px 30px cyan, 5px 5px 35px cyan, 5px 5px 40px cyan;
+			border-bottom-right-radius: 20px;
+			border-bottom-left-radius: 20px;
+			background: #151f2a;
+			width: 100%;
+			height: 50px;
+			align-items: center;
+			align-content: center;
+			text-align: center;
+			margin-top: -10px;
+			transition: 0.5s;
+			letter-spacing: 0.1em;
+		}
+		.headerActive {
+			box-shadow: 5px 5px 5px cyan, 5px 5px 10px cyan, 5px 5px 15px cyan, 5px 5px 20px cyan, 5px 5px 25px cyan, 5px 5px 30px cyan;
+			border-bottom-right-radius: 20px;
+			border-bottom-left-radius: 20px;
+			background: #151f2a;
+			width: 100%;
+			height: 50px;
+			align-items: center;
+			align-content: center;
+			text-align: center;
+			margin-top: -10px;
+			transition: 1.5s;
+			letter-spacing: 0.1em;
+		}
+		.headerl {
+			border-bottom-right-radius: 20px;
+			border-bottom-left-radius: 20px;
+			background: #151f2a;
+			width: 100%;
+			height: 50px;
+			align-items: center;
+			align-content: center;
+			text-align: center;
+			margin-top: -10px;
+			box-shadow: 0px 0px 0px cyan;
+			transition: 1.5s;
+			letter-spacing: 0.1em;
 		}
 	</style>
 </head>
@@ -216,7 +268,7 @@
 			if (idver != 'true') {
 				window.location.href = "/";
 			}
-			var socket = io.connect("http://172.17.0.10:5000")
+			var socket = io.connect("http://127.0.0.1:5000")
 
 			socket.on('connect', function() {
 				socket.send('usrconnected@nxgenServers?' + uname + "?" + uid);
@@ -241,14 +293,23 @@
 			inputFeild.addEventListener("keypress", function(event) {
 				if (event.key === "Enter") {
 					event.preventDefault();
-					$('#sendBtn').click();
+					if($('#message').val()!=""){
+					socketa.send(uname + ": " + $('#message').val() + "<:-:>" + selfcol.toString());
+					$('#message').val('');
+					var div = $('#messages');
+					div.animate({
+						scrollTop: div[0].scrollHeight
+					}, 1000);
+					}
+					$('#message').focus();
 				};
 			});
 
+			var headerl = document.getElementById("headerl");
 			socketa.on('message', function(data) {
 				if(data.includes('omghadfjkhyabweuirtagjdskgfbdsilagfbewayrnxaklsdjgf') != true){
 					misc = data.split(':');
-					ord = data.split("]");
+					ord = data.split("<:-:>");
 					if(misc[0] == uname){
 						$('#messages').append($('<div class="msgbox" style="background-color: ' + selfcol + '; float: left; width: fit-content; margin-left: auto; margin-right: auto; max-width: 80%; border-radius: 5px; border-bottom-left-radius: 0px; padding: 4px;"><p style="color: rgba(255, 255, 255, 0.7);"></div><br>').text(ord[0]));
 						$('#messages').append($('<div style="height: 5px;"></div><br>'));
@@ -260,6 +321,12 @@
 					else{
 						$('#messages').append($('<div style="background: ' + ord[1] + '; float: right; width: fit-content; margin-left: auto; margin-right: auto; max-width: 80%; border-radius: 5px; border-bottom-right-radius: 0px; padding: 4px;"><p style="color: rgba(255, 255, 255, 0.7);"></div><br>').text("  " + ord[0] + ""));
 						$('#messages').append($('<div style="height: 5px;"></div><br>'));
+						headerl.classList.remove("headerActive")
+						headerl.classList.add("headerActiveMsgExpand")
+						setTimeout(() => {
+							headerl.classList.remove("headerActiveMsgExpand")
+							headerl.classList.add("headerActive")
+						}, 500)
 						var div = $('#messages');
 						div.animate({
 							scrollTop: div[0].scrollHeight
@@ -279,6 +346,12 @@
 			});
 
 			var btnOk = document.getElementById("btnOK");
+			var inputFeild = document.getElementById("message");
+			setTimeout(()=>{
+				headerl.classList.remove("headerl");
+				headerl.classList.add("headerActive");
+				inputFeild.focus();
+			}, 2000);
 
 			let colorIndicator = document.getElementById('color-indicator');
 			const colorPicker = new iro.ColorPicker("#color-picker", {width:70, color:newCol.toString()});
@@ -294,18 +367,6 @@
 				document.getElementById("color-indicator").classList.remove("color-indicator-active");
 				socketa.emit('changecol', uid + ":" + selfcol);
 			});
-
-			$('#sendBtn').on('click', function () {
-				if($('#message').val()!=""){
-				socketa.send(uname + ": " + $('#message').val() + "]" + selfcol.toString());
-				$('#message').val('');
-				var div = $('#messages');
-				div.animate({
-					scrollTop: div[0].scrollHeight
-				}, 1000);
-				}
-				$('#message').focus();
-			})
 		}
 		const splash = document.querySelector('.splash');
 			setTimeout(()=>{
@@ -313,8 +374,8 @@
 			}, 2000);
 	</script>
 	<div style="min-height: 10px;"></div>
-	<div style="border-radius: 20px; background: #151f2a; width: 100%; height: 50px; align-items: center; align-content: center; text-align: center; padding-top: 3px;" align="centre">
-	<h1 align="left" style="color: #8f8d8d; text-align: center;">AirChat 0.1</h1>
+	<div id="headerl" class="headerl" align="centre">
+	<h1 align="left" style="color: #8f8d8d; text-align: center;">AirChat 0.2</h1>
 	</div>
 	<br>
 	<div class="color-picker"></div>
@@ -341,7 +402,6 @@
 	</div>
 	<span>
 	<div style="min-height: 60px;"></div>
-	<button id='sendBtn' class="btn"><img style="padding-left: 7px; padding-top: 2px;" src="{{ url_for('static', filename='icon-send.png') }}"></button>
 	</span>
 	<div style="max-height: 0px; max-width: 0px;" class="msgbox"></div>
 </body>

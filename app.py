@@ -1,4 +1,5 @@
 import os
+import datetime
 import flask
 import flask_socketio
 from flask import Flask, render_template, redirect
@@ -10,12 +11,23 @@ app.config['SECRET'] = 'secret@nxgen8'
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 socketio = SocketIO(app, cors_allowed_origins="*")
 
+global logfile
+logfile = "static/air.log"
+
+with open(logfile, "w+") as f:
+	pass
+
+def log(txt):
+	with open(logfile, "a") as f:
+		f.write(f"[{datetime.datetime.now()}] {txt}\n")
+
 @socketio.on('message')
 def handle_message(message):
 	if 'usrconnected@nxgenServers' in message:
 		try:
 			misc, uname, uid = message.split('?')
 			print(f"{uname} connected")
+			log(f"{uname} connected")
 			with open('user.cfg', 'r') as f:
 				usrdata = f.readlines()
 				f.close()
@@ -61,6 +73,8 @@ def handle_message(message):
 		else:
 			pass
 	else:
+		print(message)
+		log(message.split("<:-:>")[0])
 		send(message, broadcast=True)
 
 
@@ -159,4 +173,4 @@ def provide_id(data):
 
 
 if __name__ == "__main__":
-	socketio.run(app, debug=False, host='localhost', port=5000)
+	socketio.run(app, debug=False, host='127.0.0.1', port=5000)
