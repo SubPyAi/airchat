@@ -2,7 +2,7 @@
 - Neon Glow from the header and fixed floating header
 - Chat logged on server in static/air.log
 
-Upcoming features in AirChat i.e. AirChat 3.0
+Upcoming features in AirChat i.e. AirChat 0.3
 
 - More better and customisable UI
 - More unicode character support
