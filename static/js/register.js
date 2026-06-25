@@ -1,45 +1,35 @@
 $(document).ready(function() {
 			var socket = io.connect("http://127.0.0.1:5000")
-			socket.on('message', function(data) {
-				if(data=='notValid'){
-					swal({
-						title: "Error!",
-						text: "These credentials have already been taken!",
-						icon: "error",
-						button: "OK",
-					}).then((val) => {
-						if(val){
-							setTimeout(()=>{$('#id').focus()}, 200)
-						}
-					})
-					$('#id').val() = '';
-					$('#uname').val() = '';
-				}
-				if(data=="hmm"){
-					swal({
-						title: "INFO",
-						text: "You can't have a username with the word 'owner' in it",
-						icon: "info",
-						button: 'OK',
-					});
-					$('#id').val() = '';
-					$('#uname').val() = '';	
-				}
-				else {
-					swal({
-						title: "Successful!",
-						text: "Your ID has been created!",
-						icon: "success",
-						background: "red",
-						button: "OK",
-					}).then((value) => {
-						if(value){
-							setTimeout(() => {window.location.href = "/";}, 700)
-						}
-					});
-				}
+			socket.on('reg_response_success', function(data) {
+				swal({
+					title: "Successful!",
+					text: "Your ID has been created!",
+					icon: "success",
+					background: "red",
+					button: "OK",
+				}).then((value) => {
+					if(value){
+						setTimeout(() => {window.location.href = "/";}, 700)
+					}
+				});
 			});
-			var inputFeild = document.getElementById("id");
+
+			socket.on('reg_response_failure', function(data) {
+				swal({
+					title: "Error!",
+					text: "These credentials have already been taken!",
+					icon: "error",
+					button: "OK",
+				}).then((val) => {
+					if(val){
+						setTimeout(()=>{$('#uname').focus()}, 200)
+					}
+				})
+				$('#uname').val() = '';
+				$('#passwd').val() = '';
+			});
+			
+			var inputFeild = document.getElementById("passwd");
 			inputFeild.addEventListener("keypress", function(event) {
 				if (event.key === "Enter") {
 					event.preventDefault();
@@ -48,8 +38,8 @@ $(document).ready(function() {
 			});
 
 			$('#createID').on('click', function () {
-				if($('#id').val()!=''&&$('#uname').val()!=''){
-					socket.emit('request_new_id', $('#id').val()+":"+$('#uname').val());
+				if($('#uname').val()!=''&&$('#passwd').val()!=''){
+					socket.emit('reg_request', $('#uname').val()+":"+$('#passwd').val());
 				}
 			});
 		})

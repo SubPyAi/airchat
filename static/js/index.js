@@ -2,49 +2,45 @@ $(document).ready(function () {
     var socket = io.connect("http://127.0.0.1:5000");
     var requestedUname = false;
 
-    socket.on("message", function (data) {
-        if (requestedUname === true) {
-            if (data.includes($("#id").val()) === true) {
-                console.log(data);
-
-                if (data.includes("online", -8) === true) {
-                    console.log("done");
-                    swal({
-                        title: "ID already logged in!",
-                        text: "This ID is already logged in!\ncontact the owner at advikdhangarreal@gmail.com if this is a mistake.",
-                        icon: "info",
-                        button: "OK"
-                    }).then((val) => {
-                        if (val) {
-                            setTimeout($("#id").focus(), 200);
-                        }
-                    });
-                    $("#id").val("");
+    socket.on("req_login_res", function (data) {
+        console.log("Received login response:", data);
+        console.log(data['status']);
+        console.log(data['data']['uname']);
+        console.log(data['data']['uid']);
+        if (data['status'] === 0) {
+            redirectToChat(data['data']['uid'], data['data']['uname']);
+        }
+        else if (data['status'] === 1) {
+            swal({
+                title: "Error!",
+                text: "User does not exist!",
+                icon: "error",
+                button: "OK"
+            }).then((val) => {
+                if (val) {
+                    setTimeout(() => { $("#uname").focus(); }, 200);
                 }
-
-                if (data.includes("found", -8) === true) {
-                    var user = data.split(":");
-                    console.log(user);
-                    var col = user[1].split("]");
-                    var fcol = col[1].split(",");
-                    var fccol = fcol[0].split("#");
-                    redirectToChat(user, $("#id").val(), fccol[1]);
+            })
+            $("#uname").val("");
+            $("#pwd").val("");
+        }
+        else if (data['status'] === 2) {
+            swal({
+                title: "Error!",
+                text: "Incorrect password!",
+                icon: "error",
+                button: "OK"
+            }).then((val) => {
+                if (val) {
+                    setTimeout(() => { $("#pwd").focus(); }, 200);
                 }
-
-                if (data.includes("found", -8) === false && data.includes("online", -8) !== true) {
-                    $("#id").val("");
-                    swal({
-                        title: "Error!",
-                        text: "These credentials are invalid!",
-                        icon: "error",
-                        button: "OK"
-                    });
-                }
-            }
+            })
+            $("#pwd").val("");
+            $("#uname").val("");
         }
     });
 
-    var inputFeild = document.getElementById("id");
+    var inputFeild = document.getElementById("pwd");
     inputFeild.addEventListener("keypress", function (event) {
         if (event.key === "Enter") {
             event.preventDefault();
@@ -57,14 +53,13 @@ $(document).ready(function () {
     });
 
     $("#btnLogin").on("click", function () {
-        if ($("#id").val() !== "") {
-            socket.send($("#id").val() + ":" + "thisisaloginconfmsgufksjdhfbcushfadsg");
-            requestedUname = true;
+        if ($("#uname").val() !== "") {
+            socket.emit('req_login', $("#uname").val() + ":" + $("#pwd").val());
         }
     });
 });
 
-function redirectToChat(uname, uid, col) {
+function redirectToChat(uname, uid) {
     window.location.href = "chat?u=" + uname[0].toString() + "&vr=true&ud=" + uid;
 }
 

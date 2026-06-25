@@ -1,10 +1,30 @@
 import os
+import random
+import uuid
+import hashlib
+import dbmanager
+import dotenv
+import mysql.connector
 import datetime
 import flask
 import flask_socketio
 from flask import Flask, render_template, redirect
-from flask_socketio import SocketIO, send
+from flask_socketio import SocketIO, send, emit
 from time import sleep
+
+dotenv.load_dotenv()
+
+#connect to mysql db
+dbcon = mysql.connector.connect(
+	host=os.getenv("MYSQL_HOST"),
+	port=os.getenv("MYSQL_PORT"),
+	user=os.getenv("MYSQL_USER"),
+	password=os.getenv("MYSQL_PWD"),
+	database=os.getenv("MYSQL_DB")
+)
+
+#initialise mysql db controllers
+user_control = dbmanager.UserControl(dbcon)
 
 app = Flask(__name__)
 app.config['SECRET'] = 'secret@nxgen8'
@@ -77,6 +97,23 @@ def handle_message(message):
 		log(message.split("<:-:>")[0])
 		send(message, broadcast=True)
 
+@socketio.on('req_login')
+def handle_login(data):
+	print('ha')
+	uname, pwd = data.split(':')
+	pwd = hashlib.sha256(pwd.encode()).hexdigest()
+	uid = user_control.db_get_uid(uname)
+	print(f"UID: {uid}")
+	if uid is not None:
+		db_pwd = user_control.db_get_data(uid, 'pwd')
+		print(db_pwd, pwd, sep="\n")
+		if pwd == db_pwd:
+			print(f"{uname} logged in successfully")
+			emit('req_login_res', {'status': 0, 'data': {'uname': uname, 'acc_col': user_control.db_get_data(uid, 'acc_col'), 'uid': uid}})
+		else:
+			emit('req_login_res', {'status': 2, 'data': {}})
+	else:
+		emit('req_login_res', {'status': 1, 'data': {}})
 
 @app.route('/')
 def index():
@@ -113,63 +150,28 @@ def disconnect_user(data):
 
 @socketio.on('reqcol')
 def getcol(data):
-	with open('user.cfg', 'r') as f:
-		usrdata = f.readlines()
-		f.close()
-	for i in range(0, len(usrdata)):
-		a, b, c, d = usrdata[i].split(":")
-		if data == a:
-			send('auifyhbvnawhgeicfgvnweayi4grxbdwilreygnvcewrhjgdfgeashgta:'+d)
-			break
+	emit('res_acc_col', user_control.db_get_data(user_control.db_get_uid(data), 'acc_col'))
 
 @socketio.on('changecol')
 def changecolor(data):
-	uid, col = data.split(":")
-	with open('user.cfg', 'r') as f:
-		usrdata = f.readlines()
-		f.close()
-	for i in range(0, len(usrdata)):
-		a, b, c, d = usrdata[i].split(":")
-		if uid == a:
-			d = col
-			usrdata[i] = a + ":" + b + ":" + c + ":" + d + "\n"
-			with open('user.cfg', 'w') as f:
-				f.write("")
-				f.writelines(usrdata)
-				f.close()
-			break
+	uname, col = data.split(":")
+	user_control.db_update_data(user_control.db_get_uid(uname), col, 'acc_col')
 
-@socketio.on('request_new_id')
-def provide_id(data):
-	nuid, nuname = data.split(':')
-	with open('user.cfg', 'r') as f:
-		usrdata = f.readlines()
-		f.close()
-	for i in range(0, len(usrdata)):
-		a, b, c, d = usrdata[i].split(":")
-		if nuid == a:
-			send('notValid')
-			fnd = True
-			break
-		elif "Owner" in nuname or "owner" in nuname:
-			send("hmm")
-			fnd = True
-			break
-		elif nuname == b:
-			send('notValid')
-			fnd = True
-			break
-		else:
-			fnd = False
-	if fnd == False:
-		usrdata.append(f'{nuid}:{nuname}:offline:#36506c\n')
-		with open('user.cfg', 'w') as f:
-			f.write('')
-			f.writelines(usrdata)
-			f.close()
-		send('Done')
+@socketio.on('reg_request')
+def register_user(data):
+	nuname, npwd = data.split(':')
+	uid = str(uuid.uuid4())
+	npwd = hashlib.sha256(npwd.encode()).hexdigest()
+	if user_control.db_create_user({
+		'uname': nuname,
+		'pwd': npwd,
+		'acc_col': '#1b2c3a',
+		'status': 0,
+		'u_id': uid
+	}):
+		emit('reg_response_success')
 	else:
-		pass
+		emit('reg_response_failure')
 
 
 if __name__ == "__main__":

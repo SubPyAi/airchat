@@ -5,13 +5,15 @@ class UserControl:
 
     def db_create_user(self, userdata):
         with self.db.cursor() as cursor:
-            cursor.execute("SELECT * FROM users WHERE uname = %s", (userdata['username'],))
-            existing_user = cursor.fetchone()
-            if existing_user:
+            cursor.execute("SELECT uname FROM users WHERE uname = %s", (userdata['uname'],))
+            existing_user = cursor.fetchall()
+            print(existing_user)
+            print(len(existing_user))
+            if len(existing_user) > 1:
                 return False
             else:
                 query = "INSERT INTO users (uname, pwd, acc_col, status, u_id) VALUES (%s, %s, %s, %s, %s)"
-                values = (userdata['username'], userdata['password'], userdata['acc_col'], userdata['status'], userdata['u_id'])
+                values = (userdata['uname'], userdata['pwd'], userdata['acc_col'], userdata['status'], userdata['u_id'])
 
                 cursor = self.db.cursor()
                 cursor.execute(query, values)
@@ -19,44 +21,53 @@ class UserControl:
 
                 return True
     
-    def db_remove_user(self, username):
+    def db_remove_user(self, username, uid):
         with self.db.cursor() as cursor:
-            cursor.execute("SELECT * FROM users WHERE uname = %s", (username,))
-            existing_user = cursor.fetchone()
-            if not existing_user:
+            cursor.execute("SELECT * FROM users WHERE uname = %s AND u_id = %s", (username, uid))
+            existing_user = cursor.fetchall()
+            if len(existing_user) == 0:
                 return False
             else:
-                query = "DELETE FROM users WHERE uname = %s"
-                cursor.execute(query, (username,))
+                query = "DELETE FROM users WHERE uname = %s AND u_id = %s"
+                cursor.execute(query, (username, uid))
                 self.db.commit()
                 return True
     
-    def db_update_data(self, uname, data, key):
+    def db_update_data(self, uid, data, key):
         with self.db.cursor() as cursor:
-            cursor.execute("SELECT * FROM users WHERE uname = %s", (uname,))
-            existing_user = cursor.fetchone()
-            if not existing_user:
+            cursor.execute("SELECT * FROM users WHERE u_id = %s", (uid,))
+            existing_user = cursor.fetchall()
+            if len(existing_user) == 0:
                 return False
             else:
-                query = f"UPDATE users SET {key} = %s WHERE uname = %s"
-                cursor.execute(query, (data, uname))
+                query = f"UPDATE users SET {key} = %s WHERE u_id = %s"
+                cursor.execute(query, (data, uid))
                 self.db.commit()
                 return True
     
     def db_get_uid(self, uname):
         with self.db.cursor() as cursor:
             cursor.execute("SELECT u_id FROM users WHERE uname = %s", (uname,))
-            result = cursor.fetchone()
-            if result:
-                return result[0]
+            result = cursor.fetchall()
+            if len(result) > 0:
+                return result[0][0]
             else:
                 return None
     
-    def db_get_acc_col(self, uname):
+    def db_get_data(self, uid, key):
         with self.db.cursor() as cursor:
-            cursor.execute("SELECT acc_col FROM users WHERE uname = %s", (uname,))
-            result = cursor.fetchone()
-            if result:
-                return result[0]
+            cursor.execute(f"SELECT {key} FROM users WHERE u_id = %s", (uid,))
+            result = cursor.fetchall()
+            if len(result) > 0:
+                return result[0][0]
             else:
                 return None
+            
+    def db_authenticate_user(self, uname, pwd):
+        with self.db.cursor() as cursor:
+            cursor.execute("SELECT * FROM users WHERE uname = %s AND pwd = %s", (uname, pwd))
+            existing_user = cursor.fetchall()
+            if len(existing_user) == 0:
+                return False
+            else:
+                return True
