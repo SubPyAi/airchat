@@ -8,6 +8,10 @@ $(document).ready(function () {
         console.log(data['data']['uname']);
         console.log(data['data']['uid']);
         if (data['status'] === 0) {
+            localStorage.setItem("uname", data['data']['uname']);
+            localStorage.setItem("uid", data['data']['uid']);
+            localStorage.setItem("acc_col", data['data']['acc_col']);
+            localStorage.setItem("sess_id", data['data']['sess_id']);
             redirectToChat(data['data']['uid'], data['data']['uname']);
         }
         else if (data['status'] === 1) {

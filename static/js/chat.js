@@ -6,25 +6,25 @@ $(document).ready(function () {
 	if (document.referrer == '') {
 		window.location.href = '/'
 	};
-	const queryString = window.location.search;
-	const urlParams = new URLSearchParams(queryString);
-	const uname = urlParams.get('u');
-	const idver = urlParams.get('vr');
-	const uid = urlParams.get('ud');
-	if (idver != 'true') {
-		window.location.href = "/";
-	}
+	const uname = localStorage.getItem("uname");
+	const uid = localStorage.getItem("uid");
+	const acc_col = localStorage.getItem("acc_col");
+	const sess_id = localStorage.getItem("sess_id");
+
 	var socket = io.connect("http://127.0.0.1:5000")
 
 	socket.on('connect', function () {
-		socket.send('usrconnected@nxgenServers?' + uname + "?" + uid);
-		socket.emit('reqcol', uid)
+		socket.emit('validate_session', sess_id + ':' + uid);
 	});
 
-	socket.on('res_acc_col', function (data) {
-		var selfcolo = data;
-		var newColo = selfcolo;
-		helob(selfcolo, newColo, socket);
+	socket.on('validate_session_res', function (data) {
+		if (data['status'] === 0) {
+			socket.emit('reqcol', uid, (response) => {
+				var selfcolo = data;
+				var newColo = selfcolo;
+				helob(selfcolo, newColo, socket);;
+			});
+		}
 	});
 })
 function helob(selfcol, newCol, socketa) {

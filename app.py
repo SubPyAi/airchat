@@ -25,6 +25,7 @@ dbcon = mysql.connector.connect(
 
 #initialise mysql db controllers
 user_control = dbmanager.UserControl(dbcon)
+session_control = dbmanager.SessionControl(dbcon)
 
 app = Flask(__name__)
 app.config['SECRET'] = 'secret@nxgen8'
@@ -109,7 +110,8 @@ def handle_login(data):
 		print(db_pwd, pwd, sep="\n")
 		if pwd == db_pwd:
 			print(f"{uname} logged in successfully")
-			emit('req_login_res', {'status': 0, 'data': {'uname': uname, 'acc_col': user_control.db_get_data(uid, 'acc_col'), 'uid': uid}})
+			sess_id = session_control.create_session(uid)
+			emit('req_login_res', {'status': 0, 'data': {'uname': uname, 'acc_col': user_control.db_get_data(uid, 'acc_col'), 'uid': uid, 'sess_id': sess_id}})
 		else:
 			emit('req_login_res', {'status': 2, 'data': {}})
 	else:
@@ -131,22 +133,7 @@ def register():
 def disconnect_user(data):
 	uname, uid = data.split(':')
 	print(f"{uname} disconnected")
-	#socketio.send(f"{uname} left the room", broadcast=True)
-	with open('user.cfg', 'r') as f:
-		usrdata = f.readlines()
-		f.close()
-	for i in range(0, len(usrdata)):
-		if uid in usrdata[i]:
-			a, b, c, d = usrdata[i].split(":")
-			c = "offline"
-			newData = a + ":" + b + ":" + c + ":" + d
-			usrdata[i] = newData
-			with open('user.cfg', 'w') as f:
-				f.write("")
-				f.writelines(usrdata)
-				f.close()
-		else:
-			pass
+	session_control.discard_session(session_control.get_sess_id(uid))
 
 @socketio.on('reqcol')
 def getcol(data):
@@ -173,6 +160,13 @@ def register_user(data):
 	else:
 		emit('reg_response_failure')
 
+@socketio.on('req_data')
+def get_data(data):
+	uid = session_control.get_uid(data[0])
+	if uid is not None:
+		emit('res_data', {'status': 0, 'data': user_control.db_get_data(uid, data[1])})
+	else:
+		emit('res_data', {'status': 1, 'data': {}})
 
 if __name__ == "__main__":
 	socketio.run(app, debug=False, allow_unsafe_werkzeug=True, host='127.0.0.1', port=5000)
