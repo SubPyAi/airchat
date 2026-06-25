@@ -1,0 +1,236 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+*
+{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+body
+{
+  min-height: 100vh;
+}
+.inputBox1
+{
+  position: fixed;
+  min-width: 80%;
+}
+.inputBox1 input
+{
+  width: 100%;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: #1d2b3a;
+  border-radius: 5px;
+  outline: none;
+  color: #fff;
+  font-size: 1em;
+  transition: 0.5s;
+}
+.inputBox1 span
+{
+  position: absolute;
+  left: 0;
+  padding: 10px;
+  pointer-events: none;
+  font-size: 1em;
+  color: rgba(255, 255, 255, 0.2);
+  text-transform: uppercase;
+  transition: 0.5s;
+}
+.inputBox1 input:valid ~ span,
+.inputBox1 input:focus ~ span
+{
+  color: #00dfc4;
+  transform: translateX(10px) translateY(-7px);
+  font-size: 0.65em;
+  padding: 0 10px;
+  background: #00dcf4;
+  color: #1d2b3a;
+  border-radius: 2px;
+  letter-spacing: 0.2em;
+}
+.inputBox1 input:valid,
+.inputBox1 input:focus
+{
+  border-color: #00dfc4;
+}
+.message-div {
+	height:  400px;
+	width:  200px;
+	overflow: auto;
+}
+.btn
+{
+	background-color: #45f3ff;
+	color: #0852f4;
+	min-height: 30px;
+	min-width: 50px;
+	font-size: 15px;
+	border: 1px solid #00dcf4;
+	border-radius: 10px;
+}
+
+.splash{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: #1d2b3a;
+  z-index: 200;
+  color: white;
+  text-align: center;
+  line-height: 90vh;
+  font-family: 'Poppins', sans-serif;
+}
+
+.splash.display-none{
+  position: fixed;
+  opacity: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: black;
+  z-index: -10;
+  color: white;
+  text-align: center;
+  line-height: 90vh;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.5s;
+}
+
+@keyframes fadeIn{
+  to{
+    opacity: 1;
+  }
+}
+
+.fade-in{
+  opacity: 0;
+  animation: fadeIn 1s ease-in forwards;
+}
+
+.btn{
+  transition: 0.5s;
+  min-height: 45px;
+  border-radius: 35px;
+  background: #00dcf4;
+}
+.btn:hover{
+  background-color: #00dfc4;
+}
+
+.message-div{
+transition: 0.5s;
+}
+.mainDiv{
+	display: flex;
+	justify-content: center;
+}
+.container {
+	float: left;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 30px;
+}
+#style1 {
+	float: left;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	width: 60px;
+	height: 60px;
+	background-color: #000000;
+	border: none;
+	cursor: pointer;
+}
+
+.color-picker {
+	position: relative;
+	border: none;
+}
+.color-indicator {
+	display: inline-block;
+	width: 70px;
+	height: 70px;
+	background-color: #fff;
+	border-radius: 20px;
+	float: left;
+	border: none;
+	margin-left: 20px;
+	margin-top: 20px;
+}
+.color-indicator-active ~ #color-picker {
+	opacity: 1;
+}
+.color-indicator-active ~ .btnOK {
+	opacity: 1;
+}
+#color-picker {
+	display: inline-block;
+	margin-left: 10px;
+	margin-top: 20px;
+	float: left;
+	transition: opacity 0.3s ease-out;
+	opacity: 0;
+	border: none;
+}
+.btnOK {
+	float: left;
+	border-radius: 30px;
+	background: #76f544;
+	margin-top: 20px;
+	margin-left: 10px;
+	min-width: 70px;
+	min-height: 40px;
+	transform: translate(-160px, 75px);
+	transition: opacity 0.3s ease-out;
+	opacity: 0;
+	border: none;
+}
+
+.headerActiveMsgExpand {
+	box-shadow: 5px 5px 5px cyan, 5px 5px 10px cyan, 5px 5px 15px cyan, 5px 5px 20px cyan, 5px 5px 25px cyan, 5px 5px 30px cyan, 5px 5px 35px cyan, 5px 5px 40px cyan;
+	border-bottom-right-radius: 20px;
+	border-bottom-left-radius: 20px;
+	background: #151f2a;
+	width: 100%;
+	height: 50px;
+	align-items: center;
+	align-content: center;
+	text-align: center;
+	margin-top: -10px;
+	transition: 0.5s;
+	letter-spacing: 0.1em;
+}
+.headerActive {
+	box-shadow: 5px 5px 5px cyan, 5px 5px 10px cyan, 5px 5px 15px cyan, 5px 5px 20px cyan, 5px 5px 25px cyan, 5px 5px 30px cyan;
+	border-bottom-right-radius: 20px;
+	border-bottom-left-radius: 20px;
+	background: #151f2a;
+	width: 100%;
+	height: 50px;
+	align-items: center;
+	align-content: center;
+	text-align: center;
+	margin-top: -10px;
+	transition: 1.5s;
+	letter-spacing: 0.1em;
+}
+.headerl {
+	border-bottom-right-radius: 20px;
+	border-bottom-left-radius: 20px;
+	background: #151f2a;
+	width: 100%;
+	height: 50px;
+	align-items: center;
+	align-content: center;
+	text-align: center;
+	margin-top: -10px;
+	box-shadow: 0px 0px 0px cyan;
+	transition: 1.5s;
+	letter-spacing: 0.1em;
+}
