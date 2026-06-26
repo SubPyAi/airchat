@@ -9,7 +9,7 @@ class UserControl:
             existing_user = cursor.fetchall()
             print(existing_user)
             print(len(existing_user))
-            if len(existing_user) > 1:
+            if len(existing_user) > 0:
                 return False
             else:
                 query = "INSERT INTO users (uname, pwd, acc_col, status, u_id) VALUES (%s, %s, %s, %s, %s)"

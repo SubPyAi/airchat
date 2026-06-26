@@ -39,7 +39,7 @@ $(document).ready(function() {
 
 			$('#createID').on('click', function () {
 				if($('#uname').val()!=''&&$('#passwd').val()!=''){
-					socket.emit('reg_request', $('#uname').val()+":"+$('#passwd').val());
+					socket.emit('reg_request', {'uname': $('#uname').val(), 'passwd': $('#passwd').val()});
 				}
 			});
 		})

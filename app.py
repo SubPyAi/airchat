@@ -26,10 +26,12 @@ dbcon = mysql.connector.connect(
 #initialise mysql db controllers
 user_control = dbmanager.UserControl(dbcon)
 session_control = dbmanager.SessionControl(dbcon)
+message_control = dbmanager.MessageControl(dbcon)
 
 app = Flask(__name__)
 app.config['SECRET'] = 'secret@nxgen8'
 app.config['TEMPLATES_AUTO_RELOAD'] = True
+
 socketio = SocketIO(app, cors_allowed_origins="*")
 
 global logfile
@@ -42,80 +44,51 @@ def log(txt):
 	with open(logfile, "a") as f:
 		f.write(f"[{datetime.datetime.now()}] {txt}\n")
 
-@socketio.on('message')
+@socketio.on('get_messages')
+def handle_get_messages():
+	messages = message_control.get_all_messages()
+	print(messages)
+	return messages
+
+@socketio.on('send_message')
 def handle_message(message):
-	if 'usrconnected@nxgenServers' in message:
-		try:
-			misc, uname, uid = message.split('?')
-			print(f"{uname} connected")
-			log(f"{uname} connected")
-			with open('user.cfg', 'r') as f:
-				usrdata = f.readlines()
-				f.close()
-			for i in range(0, len(usrdata)):
-				a, b, c, d = usrdata[i].split(":")
-				d = d.replace("\n", '')
-				if uid == a:
-					c = "online"
-					newData = a + ":" + b + ":" + c + ":" + d + "\n"
-					usrdata[i] = newData
-					with open('user.cfg', 'w') as f:
-						f.write("")
-						f.writelines(usrdata)
-						f.close()
-				else:
-					pass
-		except:
-			pass
-	elif 'thisisaloginconfmsgufksjdhfbcushfadsg' in message:
-		uid, misc = message.split(':')
-		with open('user.cfg', 'r') as f:
-			usrdata = f.readlines()
-			f.close()
-		for i in usrdata:
-			data = []
-			data = i.split(':')
-			uid0 = data[0]
-			uname = data[1]
-			status = data[2]
-			col = data[3]
-			if uid == uid0:
-				status = status.replace('\n', '')
-				if status=='online':
-					send(uname + ':omghadfjkhyabweuirtagjdskgfbdsilagfbewayrnxaklsdjgf' + uid + ",online", broadcast=True)
-					break
-				else:
-					send(uname + ':omghadfjkhyabweuirtagjdskgfbdsilagfbewayrnxaklsdjgf' + uid + "]" + col + ",found", broadcast=True)
-					break
-			else:
-				uname = ''
-		if uname == '':
-			send(uname + ':omghadfjkhyabweuirtagjdskgfbdsilagfbewayrnxaklsdjgf' + uid + ",notfnd")
-		else:
-			pass
-	else:
-		print(message)
-		log(message.split("<:-:>")[0])
-		send(message, broadcast=True)
+	print(message)
+	message_control.add_message(message)
+	emit('new_message', message, broadcast=True)
 
 @socketio.on('req_login')
 def handle_login(data):
-	print('ha')
-	uname, pwd = data.split(':')
+	uname, pwd = data['uname'], data['passwd']
 	pwd = hashlib.sha256(pwd.encode()).hexdigest()
 	uid = user_control.db_get_uid(uname)
-	print(f"UID: {uid}")
 	if uid is not None:
 		db_pwd = user_control.db_get_data(uid, 'pwd')
-		print(db_pwd, pwd, sep="\n")
 		if pwd == db_pwd:
 			print(f"{uname} logged in successfully")
 			sess_id = session_control.create_session(uid)
-			emit('req_login_res', {'status': 0, 'data': {'uname': uname, 'acc_col': user_control.db_get_data(uid, 'acc_col'), 'uid': uid, 'sess_id': sess_id}})
+			if sess_id is None:
+				emit('req_login_res', {'status': 3, 'data': {'uid': uid}})
+			else:
+				emit('req_login_res', {'status': 0, 'data': {'uname': uname, 'acc_col': user_control.db_get_data(uid, 'acc_col'), 'uid': uid, 'sess_id': sess_id}})
 		else:
 			emit('req_login_res', {'status': 2, 'data': {}})
 	else:
 		emit('req_login_res', {'status': 1, 'data': {}})
+
+@socketio.on('change_session')
+def change_session(data):
+	uid = data['uid']
+	session_control.discard_session(session_control.get_sess_id(uid))
+	sess_id = session_control.create_session(uid)
+	return {'status': 0, 'data': {'sess_id': sess_id}}
+
+@socketio.on('validate_session')
+def validate_session(data):
+	sess_id, uid = data['sess_id'], data['uid']
+	if session_control.is_session_valid(sess_id) and session_control.get_uid(sess_id) == uid:
+		return {'status': 0}
+	else:
+		return {'status': 1}
 
 @app.route('/')
 def index():
@@ -131,22 +104,21 @@ def register():
 
 @socketio.on('client_disconnect')
 def disconnect_user(data):
-	uname, uid = data.split(':')
+	uname, uid = data['uname'], data['uid']
 	print(f"{uname} disconnected")
 	session_control.discard_session(session_control.get_sess_id(uid))
 
 @socketio.on('reqcol')
 def getcol(data):
-	emit('res_acc_col', user_control.db_get_data(user_control.db_get_uid(data), 'acc_col'))
+	emit('res_acc_col', user_control.db_get_data(user_control.db_get_uid(data['uid']), 'acc_col'))
 
 @socketio.on('changecol')
 def changecolor(data):
-	uname, col = data.split(":")
-	user_control.db_update_data(user_control.db_get_uid(uname), col, 'acc_col')
+	user_control.db_update_data(data['uid'], data['col'], 'acc_col')
 
 @socketio.on('reg_request')
 def register_user(data):
-	nuname, npwd = data.split(':')
+	nuname, npwd = data['uname'], data['passwd']
 	uid = str(uuid.uuid4())
 	npwd = hashlib.sha256(npwd.encode()).hexdigest()
 	if user_control.db_create_user({
