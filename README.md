@@ -7,24 +7,25 @@ Release Notes:
   AirChat 0.1
     - Enabled a basic id login authentication.
     - Established a socket connection using flask-socketio.
-    - Enabled basic utf-8 chatting.
 
   AirChat 0.2
     - More flat UI.
     - Added a neon glower at the header which animates on website start and does glow when a new message pops up.
     - Fixed the ugly looking floating header.
     - Messages are now logged with datetime on the server under static/air.log .
-
-Awaiting features in the same release:
-  - Fixing some minor enter events (which makes the user so irritated).
-  - A new logo (maybe).
-  - Fixing some bugs and minor details (finishing).
+  
+  AirChat 1.0
+    - No major UI changes
+    - Shifted the whole data structure onto mysql (schema @ ./.sqlschema).
+    - Enabled password authentication.
+    - Uses uuid4 encryption.
+    - Created session handling.
+    - The server now actually logs events to the logfile.
+    - The top header on the chat page now responds to accent color changes and to new messages popping up.
+    - This update however does not enable a lot of new features, but was a big structural backend change.
 
 Expected features in the next release:
-  - Emoji support.
-  - More unicode character support (internal).
-  - A lot better and customisable UI.
+  - A lot better, customisable and responsive UI.
+  - Chat rooms
   - A more customisable server.
-  - Encrypted passwords.
-  - Hash verification for messages.
   - Datetime support.

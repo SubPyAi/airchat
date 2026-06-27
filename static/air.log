@@ -1,23 +1,8 @@
-[2024-09-20 10:17:57.241371] Owner connected
-[2024-09-20 10:17:57.396569] PC connected
-[2024-09-20 10:18:01.386224] PC left the room
-[2024-09-20 10:18:01.750218] PC connected
-[2024-09-20 10:18:09.798228] PC: HI!
-[2024-09-20 10:18:14.762223] Owner left the room
-[2024-09-20 10:18:20.055219] PC left the room
-[2024-09-20 10:20:31.710289] Guest connected
-[2024-09-20 10:20:37.061351] Guest left the room
-[2024-09-20 10:22:38.739350] Guest connected
-[2024-09-20 10:23:06.465351] Guest: what is the meaning of gadha bro?
-[2024-09-20 10:23:29.947195] Owner connected
-[2024-09-20 10:23:51.725255] Guest: Hi!
-[2024-09-20 10:23:56.585206] Owner: hello
-[2024-09-20 10:23:59.015611] Owner: wassup
-[2024-09-20 10:23:59.903470] Owner: bro
-[2024-09-20 10:24:01.335901] Owner: what is
-[2024-09-20 10:24:02.577910] Owner: it
-[2024-09-20 10:24:03.928756] Owner:  th ejjd
-[2024-09-20 10:24:14.886599] Guest: hi
-[2024-09-20 10:24:15.927881] Guest: hello
-[2024-09-20 10:24:44.219708] Guest left the room
-[2024-09-20 10:24:47.352398] Owner left the room
+[2026-06-27 11:12:15.269094] [SERVER_INITIATION]: server deployment started
+[2026-06-27 11:12:15.273934] [SERVER_INITIATION]: connecting to mysql
+[2026-06-27 11:12:15.675556] [SERVER_INITIATION]: connected to mysqldb
+[2026-06-27 11:12:15.678308] [SERVER_INITIATION]: deployed mysqldb controllers
+[2026-06-27 11:12:15.763508] [SERVER_INITIATION]: deployed flask app and socketio
+[2026-06-27 11:12:15.767834] [SERVER_INITIATION]: deployed flask app routes
+[2026-06-27 11:12:15.770134] [SERVER_INITIATION]: deployed socketio handlers
+[2026-06-27 11:12:26.453176] [SERVER_INITIATION]: server is live @ 127.0.0.1:5000

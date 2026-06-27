@@ -1,0 +1,19 @@
+host => localhost
+port => 3306
+
+*all credentials stored in .env*
+
+airchat
+ - users
+  - uname varchar(64)
+  - pwd varchar(255)
+  - acc_col char(7)
+  - u_id varchar(255) primary key
+ - sessions
+  - sess_id varchar(255)
+  - u_id varchar(255)
+ - messages
+  - uname varchar(64)
+  - msg varchar(4096)
+  - at timestamp
+  - acc_col char(6)
