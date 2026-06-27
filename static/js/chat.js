@@ -64,7 +64,8 @@ function activate_client(socketa) {
 		if (event.key === "Enter") {
 			event.preventDefault();
 			if ($('#message').val() != "") {
-				socketa.emit('send_message', {'uname': uname, 'message': $('#message').val(), 'acc_col': localStorage.getItem("acc_col")});
+				socketa.emit('send_message', {'uname': uname, 'msg': $('#message').val(), 'acc_col': localStorage.getItem("acc_col").replace("#", "")});
+				console.log({'uname': uname, 'msg': $('#message').val(), 'acc_col': localStorage.getItem("acc_col").replace("#", "")});
 				$('#message').val('');
 				div.animate({
 					scrollTop: div[0].scrollHeight
@@ -79,6 +80,10 @@ function activate_client(socketa) {
 		console.log('new message received', data);
 		$('#messages').append($('<div class="msgbox" style="background-color: #' + data['acc_col'] + '; float: left; width: fit-content; margin-left: auto; margin-right: auto; max-width: 80%; border-radius: 5px; border-bottom-left-radius: 0px; padding: 4px;"><p style="color: rgba(255, 255, 255, 0.7);"></div><br>').text(data['uname'] + ": " + data['msg']));
 		$('#messages').append($('<div style="height: 5px;"></div><br>'));
+		headerl.style.setProperty('box-shadow', '5px 5px 5px ' + acc_col + ', 5px 5px 10px ' + acc_col + ', 5px 5px 15px ' + acc_col + ', 5px 5px 20px ' + acc_col + ', 5px 5px 25px ' + acc_col + ', 5px 5px 30px ' + acc_col + ', 5px 5px 35px ' + acc_col + ', 5px 5px 40px ' + acc_col);
+		setTimeout(() => {
+			headerl.style.setProperty('box-shadow', '5px 5px 5px ' + acc_col + ', 5px 5px 10px ' + acc_col + ', 5px 5px 15px ' + acc_col + ', 5px 5px 20px ' + acc_col + ', 5px 5px 25px ' + acc_col + ', 5px 5px 30px ' + acc_col);	
+		}, 1000);
 		var div = $('#messages');
 		div.animate({
 			scrollTop: div[0].scrollHeight
@@ -88,8 +93,7 @@ function activate_client(socketa) {
 	var btnOk = document.getElementById("btnOK");
 	var inputFeild = document.getElementById("message");
 	setTimeout(() => {
-		headerl.classList.remove("headerl");
-		headerl.classList.add("headerActive");
+		headerl.style.setProperty('box-shadow', '5px 5px 5px ' + acc_col + ', 5px 5px 10px ' + acc_col + ', 5px 5px 15px ' + acc_col + ', 5px 5px 20px ' + acc_col + ', 5px 5px 25px ' + acc_col + ', 5px 5px 30px ' + acc_col);
 		inputFeild.focus();
 	}, 2000);
 
@@ -102,11 +106,19 @@ function activate_client(socketa) {
 		btnOk.style.backgroundColor = color.hexString;
 	});
 
+	$('#logout').on('click', function () {
+		console.log('logout requested');
+		socketa.emit('logout', {'uid': uid, 'sess_id': localStorage.getItem("sess_id")});
+		window.location.href = '/';
+	});
+
 	$('#btnOK').on('click', function () {
 		console.log('color change requested');
 		selfcol = colorPicker.color.hexString;
 		document.getElementById("color-indicator").classList.remove("color-indicator-active");
 		socketa.emit('changecol', {'uid': uid, 'col': selfcol});
+		acc_col = selfcol;
+		headerl.style.setProperty('box-shadow', '5px 5px 5px ' + acc_col + ', 5px 5px 10px ' + acc_col + ', 5px 5px 15px ' + acc_col + ', 5px 5px 20px ' + acc_col + ', 5px 5px 25px ' + acc_col + ', 5px 5px 30px ' + acc_col);
 		localStorage.setItem("acc_col", selfcol);
 	});
 }

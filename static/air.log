@@ -1,0 +1,8 @@
+[2026-06-27 11:12:15.269094] [SERVER_INITIATION]: server deployment started
+[2026-06-27 11:12:15.273934] [SERVER_INITIATION]: connecting to mysql
+[2026-06-27 11:12:15.675556] [SERVER_INITIATION]: connected to mysqldb
+[2026-06-27 11:12:15.678308] [SERVER_INITIATION]: deployed mysqldb controllers
+[2026-06-27 11:12:15.763508] [SERVER_INITIATION]: deployed flask app and socketio
+[2026-06-27 11:12:15.767834] [SERVER_INITIATION]: deployed flask app routes
+[2026-06-27 11:12:15.770134] [SERVER_INITIATION]: deployed socketio handlers
+[2026-06-27 11:12:26.453176] [SERVER_INITIATION]: server is live @ 127.0.0.1:5000

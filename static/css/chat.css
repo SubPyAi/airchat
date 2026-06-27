@@ -56,9 +56,11 @@ body
   border-color: #00dfc4;
 }
 .message-div {
-	height:  400px;
-	width:  200px;
+	height:  70vh;
+	width:  70vw;
 	overflow: auto;
+	margin-left: 15vw;
+	margin-top: 10vh;
 }
 .btn
 {
@@ -192,34 +194,6 @@ transition: 0.5s;
 	border: none;
 }
 
-.headerActiveMsgExpand {
-	box-shadow: 5px 5px 5px cyan, 5px 5px 10px cyan, 5px 5px 15px cyan, 5px 5px 20px cyan, 5px 5px 25px cyan, 5px 5px 30px cyan, 5px 5px 35px cyan, 5px 5px 40px cyan;
-	border-bottom-right-radius: 20px;
-	border-bottom-left-radius: 20px;
-	background: #151f2a;
-	width: 100%;
-	height: 50px;
-	align-items: center;
-	align-content: center;
-	text-align: center;
-	margin-top: -10px;
-	transition: 0.5s;
-	letter-spacing: 0.1em;
-}
-.headerActive {
-	box-shadow: 5px 5px 5px cyan, 5px 5px 10px cyan, 5px 5px 15px cyan, 5px 5px 20px cyan, 5px 5px 25px cyan, 5px 5px 30px cyan;
-	border-bottom-right-radius: 20px;
-	border-bottom-left-radius: 20px;
-	background: #151f2a;
-	width: 100%;
-	height: 50px;
-	align-items: center;
-	align-content: center;
-	text-align: center;
-	margin-top: -10px;
-	transition: 1.5s;
-	letter-spacing: 0.1em;
-}
 .headerl {
 	border-bottom-right-radius: 20px;
 	border-bottom-left-radius: 20px;
@@ -233,4 +207,23 @@ transition: 0.5s;
 	box-shadow: 0px 0px 0px cyan;
 	transition: 1.5s;
 	letter-spacing: 0.1em;
+}
+
+.logout {
+	float: left;
+	background-color: #11172b;
+	transform: translate(-70px, 150px);
+	border-radius: 7px;
+	height: 30px;
+	width: 70px;
+	border: none;
+	color: #dae8e8;
+	transition: 0.5s;
+}
+
+.logout:hover {
+	color: #f0afaf;
+	transition: 0.5s;
+	transform: translate(-70px, 145px);
+	box-shadow: 0px 5px 10px red, 0px 5px 20px red, 0px 5px 30px red;
 }

@@ -39,7 +39,16 @@ $(document).ready(function() {
 
 			$('#createID').on('click', function () {
 				if($('#uname').val()!=''&&$('#passwd').val()!=''){
-					socket.emit('reg_request', {'uname': $('#uname').val(), 'passwd': $('#passwd').val()});
+					if ($('#uname').val().length > 64) {
+						swal({
+							title: "Error!",
+							text: "Username must be less than 64 characters!",
+							icon: "error",
+							button: "OK",
+						});
+					} else {
+						socket.emit('reg_request', {'uname': $('#uname').val(), 'passwd': $('#passwd').val()});
+					}
 				}
 			});
 		})

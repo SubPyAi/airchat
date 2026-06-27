@@ -3,6 +3,9 @@ $(document).ready(function () {
     var requestedUname = false;
 
     if (localStorage.getItem("uname") && localStorage.getItem("uid") && localStorage.getItem("sess_id")) {
+        console.log(localStorage.getItem("uname"));
+        console.log(localStorage.getItem("uid"));
+        console.log(localStorage.getItem("sess_id"));
         requestedUname = true;
         socket.emit('validate_session', {'sess_id': localStorage.getItem("sess_id"), 'uid': localStorage.getItem("uid")}, (response) => {
         if (response['status'] === 0) {

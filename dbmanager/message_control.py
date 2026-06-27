@@ -23,7 +23,7 @@ class MessageControl:
         with self.db.cursor() as cursor:
             cursor.execute(
                 "INSERT INTO messages (uname, msg, at, acc_col) VALUES (%s, %s, %s, %s)",
-                (data.get('uname'), data.get('message'), datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), data.get('acc_col').replace('#', ''))
+                (data.get('uname'), data.get('msg'), datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), data.get('acc_col').replace('#', ''))
             )
             self.db.commit()
     
